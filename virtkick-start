@@ -1,20 +1,23 @@
 #!/bin/bash
 set -e
-cd $(dirname $0)
+cd "$(dirname "$0")"
 
 . setup/system.sh
 
 which virsh > /dev/null # should fail and exit script in case of missing
 
-export LIBVIRT_VERSION=$(virsh --version)
+LIBVIRT_VERSION=$(virsh --version)
+export LIBVIRT_VERSION
 
 if ! [ -e webapp/README.md ] || ! [ -e backend/README.md ];then
   echo "Pulling backend and webapp submodules"
   git submodule update --init --recursive
 fi
 
-export ISO_DIR="$(readlink -f ~virtkick)/iso"
-export HDD_DIR="$(readlink -f ~virtkick)/hdd"
+ISO_DIR="$(readlink -f ~virtkick)/iso"
+HDD_DIR="$(readlink -f ~virtkick)/hdd"
+export ISO_DIR
+export HDD_DIR
 
 . setup/ruby.sh
 
@@ -33,7 +36,7 @@ which pip > /dev/null || (echo "Command \"pip\" not found, please install python
 
 #. setup/python.sh
 
-node starter.js $*
+node starter.js "$@"
 
 # Remember error
 rc=$?
